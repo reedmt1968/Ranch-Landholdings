@@ -1,0 +1,850 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ranch at the Canyons Landholdings Directory</title>
+    <link rel="stylesheet" href="index.css">
+</head>
+<body>
+
+    <!-- Header / Nav -->
+    <header>
+        <div class="container header-content">
+            <div class="logo" id="header-logo">
+                <span class="logo-icon">⛰️</span>
+                <h1 class="logo-text">Ranch at the Canyons <span>Landholdings</span></h1>
+            </div>
+            <div class="nav-links">
+                <button id="nav-home-btn">Directory Home</button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content Area -->
+    <main class="container">
+        
+        <!-- ==================== VIEW 1: SEARCH & BROWSE ==================== -->
+        <section id="search-view" class="view active">
+            
+            <!-- Hero Banner -->
+            <div class="hero-banner">
+                <img src="Ranch Images/The Ranch at the Canyons.jpg" alt="The Ranch at the Canyons" class="hero-bg" id="hero-image-el">
+                <div class="hero-overlay">
+                    <h2 class="hero-title">Ranch at the Canyons</h2>
+                    <p class="hero-subtitle">1,700-Acre Preservation Ranch & Residential Landholdings Directory</p>
+                    
+                    <!-- Search Input -->
+                    <div class="search-container">
+                        <div class="search-input-wrapper">
+                            <svg class="search-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                                <circle cx="11" cy="11" r="8"></circle>
+                                <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+                            </svg>
+                            <input type="text" id="search-input" class="search-input" placeholder="Type a Site # (e.g. 1) or Owner Name..." autocomplete="off">
+                        </div>
+                        
+                        <!-- Auto-suggest Popup -->
+                        <ul id="search-suggestions" class="suggestions-list">
+                            <!-- Populated by JavaScript -->
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Directory Grid Section -->
+            <div class="grid-filters">
+                <h3 class="section-title">Directory Browse</h3>
+                <div style="display: flex; align-items: center; gap: 16px; flex-wrap: wrap;">
+                    <span id="stats-summary" class="stats-summary">Showing 46 lots</span>
+                    <div class="filter-btn-group">
+                        <button class="filter-btn active" data-filter="all">All Lots</button>
+                        <button class="filter-btn" data-filter="built">Built (Houses)</button>
+                        <button class="filter-btn" data-filter="vacant">Vacant Land</button>
+                    </div>
+                </div>
+            </div>
+
+            <div id="lots-grid" class="lots-grid">
+                <!-- Lot cards inserted dynamically by JS -->
+            </div>
+        </section>
+
+        <!-- ==================== VIEW 2: LOT SUMMARY DETAIL ==================== -->
+        <section id="detail-view" class="view">
+            
+            <!-- Navigation and utility bar -->
+            <div class="navigation-bar">
+                <button class="back-btn" id="back-to-search-btn">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                        <line x1="19" y1="12" x2="5" y2="12"></line>
+                        <polyline points="12 19 5 12 12 5"></polyline>
+                    </svg>
+                    Back to Directory
+                </button>
+                
+                <div class="prev-next-group">
+                    <button class="nav-nav-btn" id="prev-lot-btn">← Previous Lot</button>
+                    <button class="nav-nav-btn" id="next-lot-btn">Next Lot →</button>
+                </div>
+            </div>
+
+            <!-- Detail Grid Layout -->
+            <div class="detail-layout">
+                         <!-- Top Header Row: Lot Layout Map on Left, Right Info Column on Right -->
+                <div class="detail-header-row">
+                    <!-- Hidden Lot Photo (loaded in background, opened in modal) -->
+                    <img id="detail-image" src="images/land_placeholder.png" alt="Lot Photo" style="display: none;">
+
+                    <!-- Left Column: Lot Layout Map (2X Larger: 520px x 400px) -->
+                    <div class="detail-map-wrapper" id="detail-map-wrapper">
+                        <img id="detail-map-image" src="" alt="Lot Layout Map" class="detail-image">
+                        <div id="detail-map-placeholder" class="map-placeholder" style="display: none;">
+                            <svg class="placeholder-icon" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                                <polygon points="3 6 9 3 15 6 21 3 21 18 15 21 9 18 3 21"></polygon>
+                                <line x1="9" y1="3" x2="9" y2="18"></line>
+                                <line x1="15" y1="6" x2="15" y2="21"></line>
+                            </svg>
+                            <span>No Layout Map Available</span>
+                        </div>
+                    </div>
+                    
+                    <!-- Right Column: Titles, Badges, Metrics Panel, and Owner Details card -->
+                    <div class="detail-header-right-column">
+                        <!-- Titles & Badges -->
+                        <div class="detail-titles-wrapper">
+                            <div id="detail-site-number" class="detail-site-number">Site # 00</div>
+                            <h2 id="detail-lot-name" class="detail-lot-name">Site Name</h2>
+                            <div id="detail-lot-italian" class="detail-lot-italian">Italian Name</div>
+                            
+                            <div class="detail-header-badges" style="display: flex; align-items: center; gap: 12px; margin-top: 8px; flex-wrap: wrap;">
+                                <span id="detail-badge-status" class="detail-badge">Status</span>
+                                <button id="view-photo-btn" class="photo-btn" title="View Property Photo">
+                                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="margin-right: 4px; vertical-align: middle;">
+                                        <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"></path>
+                                        <circle cx="12" cy="13" r="4"></circle>
+                                    </svg>
+                                    View Lot Photo
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Side-by-Side Metadata Block: Metrics and Owner Details -->
+                        <div class="detail-header-meta-row">
+                            <!-- Metrics Grid (Stacked Vertically) -->
+                            <div class="metrics-panel">
+                                <div class="metric-card">
+                                    <div class="metric-label">Size (Acreage)</div>
+                                    <div id="metric-acres" class="metric-value">-</div>
+                                </div>
+                                <div class="metric-card">
+                                    <div class="metric-label">Built Status</div>
+                                    <div id="metric-built" class="metric-value">-</div>
+                                </div>
+                                <div class="metric-card">
+                                    <div class="metric-label">Year Built</div>
+                                    <div id="metric-built-year" class="metric-value">-</div>
+                                </div>
+                            </div>
+
+                            <!-- Ownership Details Card -->
+                            <div class="owner-card">
+                                <h4 class="info-group-title" style="margin-bottom: 8px;">Ownership Details</h4>
+                                <div id="detail-owner" class="owner-name">Owner Name</div>
+                                
+                                <div class="contacts-list">
+                                    <div class="contact-row">
+                                        <span class="contact-sublabel">Email 1</span>
+                                        <div id="detail-email-1" class="contact-value-container">
+                                            <!-- Populated by JS -->
+                                        </div>
+                                    </div>
+                                    <div class="contact-row">
+                                        <span class="contact-sublabel">Email 2</span>
+                                        <div id="detail-email-2" class="contact-value-container">
+                                            <!-- Populated by JS -->
+                                        </div>
+                                    </div>
+                                    <div class="contact-row">
+                                        <span class="contact-sublabel">Phone 1</span>
+                                        <div id="detail-phone-1" class="contact-value-container">
+                                            <!-- Populated by JS -->
+                                        </div>
+                                    </div>
+                                    <div class="contact-row">
+                                        <span class="contact-sublabel">Phone 2</span>
+                                        <div id="detail-phone-2" class="contact-value-container">
+                                            <!-- Populated by JS -->
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Bottom Column Grid: Spread Below (Address/Notes on Left, Timeline on Right) -->
+                <div class="detail-info-section">
+                    
+                    <!-- Left Column: Location, Address & Descriptive Notes -->
+                    <div class="detail-column-left">
+                        <!-- Location & Address -->
+                        <div class="info-group">
+                            <h4 class="info-group-title">Property Address</h4>
+                            <div class="address-row">
+                                <a id="detail-address-link" href="#" target="_blank" class="address-content-link" title="Open in Google Maps">
+                                    <div class="address-content">
+                                        <svg class="address-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                            <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path>
+                                            <circle cx="12" cy="10" r="3"></circle>
+                                        </svg>
+                                        <span id="detail-address">Address Location</span>
+                                    </div>
+                                </a>
+                                <a id="zillow-link-btn" href="#" target="_blank" class="real-estate-btn zillow-btn">
+                                    <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" style="display:inline-block; vertical-align:middle; margin-right:4px;">
+                                        <path d="M12 .587l3.668 7.431 8.2 1.192-5.934 5.787 1.4 8.168L12 18.896l-7.334 3.857 1.4-8.168L.132 9.21l8.2-1.192L12 .587z"/>
+                                    </svg>
+                                    Zillow Search / Listing
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Right Column: Market Listing Timeline -->
+                    <div class="detail-column-right">
+                        <!-- Sales History and Prices -->
+                        <div id="detail-listing-card" class="listing-card">
+                            <div class="listing-status-title">Market & Listing History</div>
+                            <div id="detail-listing-info" class="timeline-container">
+                                <!-- Populated dynamically by JavaScript -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Footer -->
+    <footer>
+        <div class="container footer-content">
+            <p>© 2026 Ranch at the Canyons Landholdings Association. All rights reserved.</p>
+            <p style="font-size: 11px; margin-top: 4px;">Terrebonne, Oregon. Directory compiled from verified local property records and site maps.</p>
+        </div>
+    </footer>
+
+    <!-- App JavaScript -->
+    <script src="data.js"></script>
+    <script>
+        // Core App Module
+        const App = {
+            currentLot: null,
+            currentFilter: 'all',
+
+            init() {
+                // Ensure data.js loaded successfully
+                if (typeof landholdings === 'undefined' || !Array.isArray(landholdings)) {
+                    console.error("Failed to load landholdings dataset. Please check data.js.");
+                    return;
+                }
+
+                console.log("Landholdings data initialized. Count:", landholdings.length);
+
+                // Setup event listeners
+                this.setupEventListeners();
+                
+                // Initialize URL Router
+                this.handleRouting();
+
+                // Initial render of browse grid
+                this.renderGrid();
+                this.updateStats();
+            },
+
+            setupEventListeners() {
+                // Search Input event
+                const searchInput = document.getElementById('search-input');
+                searchInput.addEventListener('input', (e) => this.handleSearch(e.target.value));
+                searchInput.addEventListener('focus', (e) => this.handleSearch(e.target.value));
+                
+                // Close search dropdown on click outside
+                document.addEventListener('click', (e) => {
+                    const container = document.querySelector('.search-container');
+                    if (!container.contains(e.target)) {
+                        document.getElementById('search-suggestions').classList.remove('active');
+                    }
+                });
+
+                // Logo click home trigger
+                document.getElementById('header-logo').addEventListener('click', () => {
+                    window.location.hash = '';
+                });
+                document.getElementById('nav-home-btn').addEventListener('click', () => {
+                    window.location.hash = '';
+                });
+                document.getElementById('back-to-search-btn').addEventListener('click', () => {
+                    window.location.hash = '';
+                });
+
+                // Next / Previous buttons
+                document.getElementById('prev-lot-btn').addEventListener('click', () => this.navigateSibling(-1));
+                document.getElementById('next-lot-btn').addEventListener('click', () => this.navigateSibling(1));
+
+                // Filter Buttons click
+                const filterBtns = document.querySelectorAll('.filter-btn');
+                filterBtns.forEach(btn => {
+                    btn.addEventListener('click', (e) => {
+                        filterBtns.forEach(b => b.classList.remove('active'));
+                        e.target.classList.add('active');
+                        this.currentFilter = e.target.dataset.filter;
+                        this.renderGrid();
+                        this.updateStats();
+                    });
+                });
+
+                // Modal event listeners for viewing photo
+                const photoModal = document.getElementById('photo-modal');
+                const viewPhotoBtn = document.getElementById('view-photo-btn');
+                const closeModalBtn = document.getElementById('close-modal-btn');
+                const modalImg = document.getElementById('modal-image');
+                
+                viewPhotoBtn.addEventListener('click', () => {
+                    const imgEl = document.getElementById('detail-image');
+                    modalImg.src = imgEl.src;
+                    photoModal.classList.add('active');
+                });
+                
+                closeModalBtn.addEventListener('click', () => {
+                    photoModal.classList.remove('active');
+                });
+                
+                photoModal.addEventListener('click', (e) => {
+                    if (e.target === photoModal) {
+                        photoModal.classList.remove('active');
+                    }
+                });
+                
+                document.addEventListener('keydown', (e) => {
+                    if (e.key === 'Escape' && photoModal.classList.contains('active')) {
+                        photoModal.classList.remove('active');
+                    }
+                });
+
+                // Window Hash Routing
+                window.addEventListener('hashchange', () => this.handleRouting());
+            },
+
+            // Routing engine based on URL hashes (#lot/1)
+            handleRouting() {
+                const hash = window.location.hash;
+                const lotMatch = hash.match(/^#lot\/([a-zA-Z0-9_-]+)$/);
+
+                if (lotMatch) {
+                    const lotNum = lotMatch[1];
+                    const lot = landholdings.find(item => item['Site #'] === lotNum);
+                    if (lot) {
+                        this.showDetailView(lot);
+                        return;
+                    }
+                }
+                
+                // Fallback to home/search view
+                this.showSearchView();
+            },
+
+            showSearchView() {
+                document.getElementById('detail-view').classList.remove('active');
+                document.getElementById('search-view').classList.add('active');
+                document.getElementById('search-input').value = '';
+                document.getElementById('search-suggestions').classList.remove('active');
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            },
+
+            showDetailView(lot) {
+                this.currentLot = lot;
+                document.getElementById('search-view').classList.remove('active');
+                document.getElementById('detail-view').classList.add('active');
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+
+                // Set lot header details
+                document.getElementById('detail-site-number').textContent = `Site # ${lot['Site #']}`;
+                document.getElementById('detail-lot-name').textContent = lot['Name'] || `Lot ${lot['Site #']}`;
+                document.getElementById('detail-lot-italian').textContent = lot['Italian Name'] ? `"${lot['Italian Name']}"` : '';
+
+                // Built Status & Badges
+                const isBuilt = lot['Built? Y/N'] === 'Y';
+                const statusText = isBuilt ? 'Built' : 'Vacant';
+                
+                const statusBadge = document.getElementById('detail-badge-status');
+                statusBadge.textContent = statusText;
+                statusBadge.className = `detail-badge ${isBuilt ? 'badge-built' : 'badge-vacant'}`;
+
+                // Acres badge removed (using metrics panel size instead)
+
+                // Populate metrics panel
+                document.getElementById('metric-acres').textContent = lot['Acres'] || 'N/A';
+                document.getElementById('metric-built').textContent = isBuilt ? 'Residential' : 'Vacant Land';
+                document.getElementById('metric-built-year').textContent = lot['Built'] || 'N/A';
+
+                // Address Location & Google Maps Link
+                const addressVal = lot['Address'] || 'Ranch at the Canyons, Terrebonne, OR 97760';
+                document.getElementById('detail-address').textContent = addressVal;
+                document.getElementById('detail-address-link').href = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(addressVal + ', Terrebonne, OR 97760')}`;
+
+                // Owner Card
+                document.getElementById('detail-owner').textContent = lot['Owner'] || 'Information not listed';
+
+                // Helper to render contact item
+                function renderContactValue(elementId, value, type) {
+                    const container = document.getElementById(elementId);
+                    container.innerHTML = '';
+                    
+                    const cleanValue = value ? value.trim() : '';
+                    if (cleanValue && cleanValue !== '--' && cleanValue !== '') {
+                        const link = document.createElement('a');
+                        if (type === 'email') {
+                            link.href = `mailto:${cleanValue}`;
+                        } else if (type === 'phone') {
+                            link.href = `tel:${cleanValue.replace(/[^0-9]/g, '')}`;
+                        }
+                        link.className = 'contact-link';
+                        link.textContent = cleanValue;
+                        container.appendChild(link);
+                    } else {
+                        const span = document.createElement('span');
+                        span.className = 'contact-value-empty';
+                        span.textContent = 'None Listed';
+                        container.appendChild(span);
+                    }
+                }
+
+                renderContactValue('detail-email-1', lot['Email 1'], 'email');
+                renderContactValue('detail-email-2', lot['Email 2'], 'email');
+                renderContactValue('detail-phone-1', lot['Phone Number 1'], 'phone');
+                renderContactValue('detail-phone-2', lot['Phone Number 2'], 'phone');
+
+                // Listing Info & Selling card timeline generation
+                const listingCard = document.getElementById('detail-listing-card');
+                const timelineContainer = document.getElementById('detail-listing-info');
+                
+                // Parse out URLs in notes and listings
+                const urlRegex = /(https?:\/\/[^\s]+)/g;
+                let notesContent = lot['Notes'] || '';
+                let extractedUrl = null;
+                const listingContent = lot['Link to listing'] || '';
+                
+                const urlsInListing = listingContent.match(urlRegex);
+                const urlsInNotes = notesContent.match(urlRegex);
+                
+                let cleanListingContent = listingContent;
+                let cleanNotesContent = notesContent;
+                
+                if (urlsInListing && urlsInListing.length > 0) {
+                    extractedUrl = urlsInListing[0];
+                    cleanListingContent = listingContent.replace(extractedUrl, '').trim();
+                } else if (urlsInNotes && urlsInNotes.length > 0) {
+                    extractedUrl = urlsInNotes[0];
+                    cleanNotesContent = notesContent.replace(extractedUrl, '').trim();
+                }
+
+                // Chronological price/listing history timeline parser
+                const priceEvents = [];
+                
+                function parseDateFromText(text) {
+                    const dateRegex = /\b(\d{1,2})\/(\d{1,2})\/(\d{2,4})\b/;
+                    const yearRegex = /\b(19\d{2}|20\d{2})\b/;
+                    
+                    const matchDate = text.match(dateRegex);
+                    if (matchDate) {
+                        let month = parseInt(matchDate[1]);
+                        let day = parseInt(matchDate[2]);
+                        let year = parseInt(matchDate[3]);
+                        if (year < 100) year += 2000;
+                        return new Date(year, month - 1, day).getTime();
+                    }
+                    
+                    const matchYear = text.match(yearRegex);
+                    if (matchYear) {
+                        let year = parseInt(matchYear[1]);
+                        return new Date(year, 0, 1).getTime();
+                    }
+                    
+                    const shortDateRegex = /\b(\d{1,2})\/(\d{1,2})\b/;
+                    const matchShort = text.match(shortDateRegex);
+                    if (matchShort) {
+                        let month = parseInt(matchShort[1]);
+                        let day = parseInt(matchShort[2]);
+                        return new Date(2025, month - 1, day).getTime(); // Default to 2025
+                    }
+                    
+                    return 0;
+                }
+
+                function getDisplayDate(text, timestamp) {
+                    if (timestamp === 0) {
+                        return "Market Record";
+                    }
+                    
+                    const dateObj = new Date(timestamp);
+                    const dateRegex = /\b\d{1,2}\/\d{1,2}\/\d{2,4}\b/;
+                    if (dateRegex.test(text)) {
+                        return dateObj.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+                    }
+                    
+                    const yearRegex = /\b(19\d{2}|20\d{2})\b/;
+                    if (yearRegex.test(text)) {
+                        return dateObj.toLocaleDateString('en-US', { year: 'numeric' });
+                    }
+                    
+                    return dateObj.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+                }
+
+                function extractEvents(text, sourceField) {
+                    if (!text || text.trim() === '' || text === '--') return;
+                    
+                    const parts = text.split(';');
+                    parts.forEach(part => {
+                        const cleanPart = part.trim();
+                        if (cleanPart === '' || cleanPart === '--') return;
+                        
+                        const lower = cleanPart.toLowerCase();
+                        const isPriceEvent = lower.includes('$') || 
+                                             lower.includes('sold') || 
+                                             lower.includes('list') || 
+                                             lower.includes('sale') || 
+                                             lower.includes('price') || 
+                                             lower.includes('market') || 
+                                             lower.includes('paid') ||
+                                             lower.includes('offered') ||
+                                             lower.includes('ask');
+                        
+                        if (isPriceEvent) {
+                            priceEvents.push({
+                                text: cleanPart,
+                                source: sourceField,
+                                timestamp: parseDateFromText(cleanPart)
+                            });
+                        }
+                    });
+                }
+
+                extractEvents(cleanListingContent, 'listing');
+                extractEvents(cleanNotesContent, 'notes');
+
+                // Add Date Sold if it exists and isn't represented
+                if (lot['Date Sold'] && lot['Date Sold'] !== '--' && lot['Date Sold'].trim() !== '') {
+                    const hasSoldEvent = priceEvents.some(e => e.text.toLowerCase().includes('sold') && e.text.includes(lot['Date Sold']));
+                    if (!hasSoldEvent) {
+                        priceEvents.push({
+                            text: `Sold on ${lot['Date Sold']}`,
+                            source: 'sold-date',
+                            timestamp: parseDateFromText(lot['Date Sold'])
+                        });
+                    }
+                }
+
+                // Sort chronologically (oldest to newest)
+                priceEvents.sort((a, b) => {
+                    if (a.timestamp === 0 && b.timestamp !== 0) return 1;
+                    if (a.timestamp !== 0 && b.timestamp === 0) return -1;
+                    return a.timestamp - b.timestamp;
+                });
+
+                // Display Timeline
+                timelineContainer.innerHTML = '';
+                
+                if (priceEvents.length > 0) {
+                    listingCard.style.display = 'block';
+                    priceEvents.forEach((event, idx) => {
+                        const item = document.createElement('div');
+                        item.className = `timeline-item ${idx === priceEvents.length - 1 ? 'latest' : ''}`;
+                        const dateLabel = getDisplayDate(event.text, event.timestamp);
+                        item.innerHTML = `
+                            <div class="timeline-date">${dateLabel}</div>
+                            <div class="timeline-text">${event.text}</div>
+                        `;
+                        timelineContainer.appendChild(item);
+                    });
+                } else {
+                    listingCard.style.display = 'block';
+                    timelineContainer.innerHTML = `
+                        <div style="color: var(--color-text-light); font-size: 14px; font-style: italic;">
+                            No listing history or price events recorded.
+                        </div>
+                    `;
+                }
+
+                // Split notes: separate non-price annotations from the price events
+                const nonPriceParts = [];
+                if (cleanNotesContent && cleanNotesContent !== '--') {
+                    cleanNotesContent.split(';').forEach(part => {
+                        const cleanPart = part.trim();
+                        if (cleanPart === '') return;
+                        const lower = cleanPart.toLowerCase();
+                        const isPriceEvent = lower.includes('$') || 
+                                             lower.includes('sold') || 
+                                             lower.includes('list') || 
+                                             lower.includes('sale') || 
+                                             lower.includes('price') || 
+                                             lower.includes('market') || 
+                                             lower.includes('paid');
+                        if (!isPriceEvent) {
+                            nonPriceParts.push(cleanPart);
+                        }
+                    });
+                }
+                
+
+
+
+                // Populate the permanent Zillow link
+                const zillowBtn = document.getElementById('zillow-link-btn');
+                
+                // 1. Resolve Zillow Link (prefer specific URL from notes/listings, else search query)
+                let zillowUrl = '';
+                if (extractedUrl && extractedUrl.includes('zillow.com')) {
+                    zillowUrl = extractedUrl;
+                } else {
+                    const searchQ = `${lot['Address'] || ''}, Terrebonne, OR 97760`.trim();
+                    zillowUrl = `https://www.zillow.com/homes/${encodeURIComponent(searchQ)}_rb/`;
+                }
+                zillowBtn.href = zillowUrl;
+
+                // DYNAMIC PHOTO LOADING logic (only check Ranch Images folder, else placeholder)
+                const imgEl = document.getElementById('detail-image');
+                imgEl.src = 'images/land_placeholder.png'; // Start with placeholder
+
+                const siteNum = lot['Site #'];
+                
+                // Paths to check (only checks Ranch Images folder)
+                const extensions = ['webp', 'jpg', 'jpeg', 'png'];
+                const pathsToCheck = [];
+                
+                extensions.forEach(ext => {
+                    pathsToCheck.push(`Ranch Images/Lot ${siteNum}.${ext}`);
+                });
+                
+                // Function to try loading images sequentially
+                function tryLoadImage(index) {
+                    if (index >= pathsToCheck.length) {
+                        imgEl.src = 'images/land_placeholder.png'; // Fallback to placeholder
+                        return;
+                    }
+                    
+                    const testImg = new Image();
+                    testImg.onload = () => {
+                        imgEl.src = pathsToCheck[index];
+                    };
+                    testImg.onerror = () => {
+                        tryLoadImage(index + 1);
+                    };
+                    testImg.src = pathsToCheck[index];
+                }
+                
+                tryLoadImage(0);
+
+                // DYNAMIC LOT LAYOUT MAP LOADING logic (checks Site Maps and Lot images folder)
+                const mapImgEl = document.getElementById('detail-map-image');
+                const mapWrapper = document.getElementById('detail-map-wrapper');
+                const mapPlaceholder = document.getElementById('detail-map-placeholder');
+                
+                // Paths to check for layout maps (Site Maps / Lot images folders)
+                const mapExtensions = ['png', 'jpg', 'jpeg', 'webp'];
+                const mapPathsToCheck = [];
+                
+                mapExtensions.forEach(ext => {
+                    // Check with trailing space (e.g., "Lot 1 .png")
+                    mapPathsToCheck.push(`Site Maps/Lot ${siteNum} .${ext}`);
+                    mapPathsToCheck.push(`Site Maps/Lot ${siteNum}.${ext}`);
+                    mapPathsToCheck.push(`Lot images/Lot ${siteNum} .${ext}`);
+                    mapPathsToCheck.push(`Lot images/Lot ${siteNum}.${ext}`);
+                });
+                
+                function tryLoadMap(index) {
+                    if (index >= mapPathsToCheck.length) {
+                        // If no layout map exists, show a clean blank box placeholder
+                        mapImgEl.style.display = 'none';
+                        mapImgEl.src = '';
+                        mapPlaceholder.style.display = 'flex';
+                        mapWrapper.style.display = 'flex';
+                        return;
+                    }
+                    
+                    const testImg = new Image();
+                    testImg.onload = () => {
+                        mapImgEl.src = mapPathsToCheck[index];
+                        mapImgEl.style.display = 'block';
+                        mapPlaceholder.style.display = 'none';
+                        mapWrapper.style.display = 'flex'; // Show container
+                    };
+                    testImg.onerror = () => {
+                        tryLoadMap(index + 1);
+                    };
+                    testImg.src = mapPathsToCheck[index];
+                }
+                
+                tryLoadMap(0);
+            },
+
+            navigateSibling(dir) {
+                if (!this.currentLot) return;
+                
+                const currentIndex = landholdings.findIndex(item => item['Site #'] === this.currentLot['Site #']);
+                if (currentIndex === -1) return;
+
+                let targetIndex = currentIndex + dir;
+                
+                // Circular navigation
+                if (targetIndex < 0) {
+                    targetIndex = landholdings.length - 1;
+                } else if (targetIndex >= landholdings.length) {
+                    targetIndex = 0;
+                }
+
+                const targetLot = landholdings[targetIndex];
+                window.location.hash = `lot/${targetLot['Site #']}`;
+            },
+
+            // Handle typing and searching
+            handleSearch(query) {
+                const sugList = document.getElementById('search-suggestions');
+                if (!query || query.trim() === '') {
+                    sugList.classList.remove('active');
+                    sugList.innerHTML = '';
+                    return;
+                }
+
+                const q = query.toLowerCase().trim();
+                
+                // Match search against Site #, Owner Name, English Name, Italian Name, Address
+                const matches = landholdings.filter(lot => {
+                    const siteNum = lot['Site #'] ? lot['Site #'].toLowerCase() : '';
+                    const owner = lot['Owner'] ? lot['Owner'].toLowerCase() : '';
+                    const name = lot['Name'] ? lot['Name'].toLowerCase() : '';
+                    const italian = lot['Italian Name'] ? lot['Italian Name'].toLowerCase() : '';
+                    const address = lot['Address'] ? lot['Address'].toLowerCase() : '';
+
+                    return siteNum === q || 
+                           siteNum.startsWith(q) || 
+                           owner.includes(q) || 
+                           name.includes(q) || 
+                           italian.includes(q) ||
+                           address.includes(q);
+                }).slice(0, 8); // Max 8 suggestions for premium UX look
+
+                if (matches.length > 0) {
+                    sugList.innerHTML = '';
+                    matches.forEach(lot => {
+                        const li = document.createElement('li');
+                        li.className = 'suggestion-item';
+                        
+                        const isBuilt = lot['Built? Y/N'] === 'Y';
+                        const badgeClass = isBuilt ? 'built' : 'vacant';
+                        const badgeText = isBuilt ? 'Built' : 'Vacant';
+
+                        li.innerHTML = `
+                            <div class="suggestion-info">
+                                <div class="suggestion-title">Site ${lot['Site #']}: ${lot['Name'] || 'Unnamed'}</div>
+                                <div class="suggestion-subtitle">${lot['Owner'] || 'No Owner'}</div>
+                            </div>
+                            <span class="suggestion-badge ${badgeClass}">${badgeText}</span>
+                        `;
+                        
+                        li.addEventListener('click', () => {
+                            window.location.hash = `lot/${lot['Site #']}`;
+                            sugList.classList.remove('active');
+                        });
+                        sugList.appendChild(li);
+                    });
+                    sugList.classList.add('active');
+                } else {
+                    sugList.innerHTML = `
+                        <li class="suggestion-item" style="cursor: default; justify-content: center; color: var(--color-text-light);">
+                            No matching lots or owners found.
+                        </li>
+                    `;
+                    sugList.classList.add('active');
+                }
+            },
+
+            // Filter data based on filter settings
+            getFilteredData() {
+                if (this.currentFilter === 'built') {
+                    return landholdings.filter(item => item['Built? Y/N'] === 'Y');
+                } else if (this.currentFilter === 'vacant') {
+                    return landholdings.filter(item => item['Built? Y/N'] === 'N');
+                }
+                return landholdings;
+            },
+
+            updateStats() {
+                const filtered = this.getFilteredData();
+                const totalCount = landholdings.length;
+                const builtCount = landholdings.filter(item => item['Built? Y/N'] === 'Y').length;
+                const vacantCount = totalCount - builtCount;
+
+                const statsEl = document.getElementById('stats-summary');
+                
+                if (this.currentFilter === 'all') {
+                    statsEl.textContent = `Showing all ${totalCount} interests (${builtCount} Built, ${vacantCount} Vacant)`;
+                } else if (this.currentFilter === 'built') {
+                    statsEl.textContent = `Showing ${filtered.length} built properties (out of ${totalCount})`;
+                } else {
+                    statsEl.textContent = `Showing ${filtered.length} vacant lots (out of ${totalCount})`;
+                }
+            },
+
+            // Render all lots in the Grid
+            renderGrid() {
+                const grid = document.getElementById('lots-grid');
+                grid.innerHTML = '';
+
+                const data = this.getFilteredData();
+
+                data.forEach(lot => {
+                    const card = document.createElement('div');
+                    
+                    const isBuilt = lot['Built? Y/N'] === 'Y';
+                    card.className = `lot-card ${isBuilt ? 'built' : 'vacant'}`;
+
+                    card.innerHTML = `
+                        <div class="card-header">
+                            <span class="card-number">Site ${lot['Site #']}</span>
+                            <span class="card-status-badge">${isBuilt ? 'Built' : 'Vacant'}</span>
+                        </div>
+                        <div class="card-body">
+                            <h4 class="card-title">${lot['Name'] || 'Lot ' + lot['Site #']}</h4>
+                            <p class="card-subtitle">${lot['Italian Name'] || ''}</p>
+                        </div>
+                        <div class="card-footer">
+                            <span class="card-owner" title="${lot['Owner'] || 'No Owner'}">${lot['Owner'] || 'No Owner'}</span>
+                            <span class="card-acres">${lot['Acres'] ? lot['Acres'] + ' ac' : '--'}</span>
+                        </div>
+                    `;
+
+                    card.addEventListener('click', () => {
+                        window.location.hash = `lot/${lot['Site #']}`;
+                    });
+
+                    grid.appendChild(card);
+                });
+            }
+        };
+
+        // Launch the App
+        document.addEventListener('DOMContentLoaded', () => {
+            App.init();
+        });
+    </script>
+    <!-- Modal for viewing Lot Photo -->
+    <div id="photo-modal" class="modal-overlay">
+        <div class="modal-content">
+            <button class="modal-close-btn" id="close-modal-btn" title="Close Window">&times;</button>
+            <img id="modal-image" src="images/land_placeholder.png" alt="Property Photo" class="modal-image">
+        </div>
+    </div>
+</body>
+</html>
